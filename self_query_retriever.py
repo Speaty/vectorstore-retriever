@@ -15,7 +15,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 
 def save_data(chat_history):
-    with open('chatlog/chat_history_self_query.txt', 'a') as f:
+    with open(chatlog + 'chat_history_self_query.txt', 'a') as f:
         f.write('#' * 80)
         f.write('\n' + str(datetime.datetime.now()) + '\n')
         for item in chat_history:
@@ -23,6 +23,12 @@ def save_data(chat_history):
             f.write("Q: %s\n" % item[0])
             f.write("A: %s\n\n" % item[1])
         f.write('#' * 80 + '\n')
+
+##############################################################################
+# Setup
+##############################################################################
+knowledge_base = 'knowledge_base/' # directory of pdfs
+chatlog = 'chatlog/' # directory of chatlogs
 
 os.environ["OPENAI_API_KEY"] = keys.openai_api
 embeddings = OpenAIEmbeddings()
@@ -38,10 +44,10 @@ if setup == 'y':
     print("Setting up new index...")
 
     #create index
-    pinecone.create_index(name="test1", dimension=1536)
+    pinecone.create_index(name=keys.pinecone_index, dimension=1536)
 
     #get data
-    loader = DirectoryLoader('knowledge_base/', glob='*.pdf', show_progress=True, loader_cls=PyPDFLoader)
+    loader = DirectoryLoader(knowledge_base, glob='*.pdf', show_progress=True, loader_cls=PyPDFLoader)
     documents = loader.load_and_split()
 
     print(type(documents[0]))
@@ -55,7 +61,7 @@ if setup == 'y':
 elif setup == 'n':
     #load index
     print("Loading index...")
-    vectorstore = Pinecone.from_existing_index(index_name="test1", embedding=embeddings)
+    vectorstore = Pinecone.from_existing_index(index_name=keys.pinecone_index, embedding=embeddings)
 
 #query data
 history = []
