@@ -4,3 +4,5 @@ knowledge_base/
 chatlog/
 
 keys.py
+
+__pycache__/
