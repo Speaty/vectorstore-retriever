@@ -6,3 +6,7 @@ chatlog/
 keys.py
 
 __pycache__/
+
+logs/
+
+python3.9.exe.stackdump
